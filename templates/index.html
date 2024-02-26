@@ -1,22 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Todo App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-image: url('{{ url_for('static', filename='bg.png') }}');
+            background-size: 200%;
+    
+        }
 
+        form {
+            margin-bottom: 20px;
+        }
+        
+        button{
+            background-color: greenyellow;
+            border: 0px;
+            width: 6rem;
+            height: 3rem;
+            border-radius: 20px;
+            border: none;
+        }
 
+        input{
+            border-radius: 20px;
+            height: 3rem;
+            width: 20rem;
+            border-color: #555;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .completed {
+            text-decoration: line-through;
+            color: #999;
+        }
+
+        .delete-btn {
+            color: #f00;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        hr {
+            margin-top: 20px;
+            margin-bottom: 20px;
+            border: 0;
+            border-top: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>TASK SCHEDULER</h1>
+</header>
 
 <form action="/addTask" method="GET">
-	<input type="text" name="task" placeholder="Task">
-	<button type="submit">Add Task</button>
+    <input type="text" name="task" placeholder="Task">
+    <button type="submit">Add Task</button>
 </form>
 
 <div>
 
-    <h3>Todo Tasks</h3>
+    <h3>Task Schedules:</h3>
     <br>
     {% if tasks|length < 1 %}
     <p>No tasks to display</p>
     {% else %}
     <table>
+        <tr>
+            <th>Task</th>
+            <th>Actions</th>
+        </tr>
         {% for task in tasks %}
         <tr>
-            <td>{{ task[1] }} [<a href="/move-to-done/{{ task[0] }}/{{ task[1] }}">done</a> | <a href="/deleteTask/{{ task[0] }}">delete</a>] </td>
+            <td {% if task[3] %} class="completed" {% endif %}>{{ task[1] }}</td>
+            <td>
+                [<a href="/move-to-done/{{ task[0] }}/{{ task[1] }}">done</a> |
+                <a class="delete-btn" href="/deleteTask/{{ task[0] }}">delete</a>]
+            </td>
         </tr>
         {% endfor %}
     </table>
@@ -30,14 +118,22 @@
     {% if done|length < 1 %}
     <p>No tasks completed</p>
     {% else %}
-        <table>
-            {% for task in done %}
+    <table>
         <tr>
+            <th>Task</th>
+            <th>Actions</th>
+        </tr>
+        {% for task in done %}
+        <tr>
+            <td class="completed">{{ task[1] }}</td>
             <td>
-                {{ task[1] }} [<a href="/delete-completed/{{ task[0] }}">delete</a>]
+                [<a class="delete-btn" href="/delete-completed/{{ task[0] }}">delete</a>]
             </td>
         </tr>
         {% endfor %}
-        </table>
-        {% endif %}
+    </table>
+    {% endif %}
 </div>
+
+</body>
+</html>
